@@ -4,14 +4,14 @@ from db_handler import db
 
 app = Flask(__name__)
 
-@app.route('/books/<int:book_id>')
-def get_book(book_id):
+@app.route('/uwb/<int:uwb_id>')
+def get_uwb(uwb_id):
 
     # Create a cursor object to execute SQL queries
     cursor = db.cursor()
 
     # Execute a SELECT query to fetch the book data from the database
-    cursor.execute("SELECT id, title, author FROM books WHERE id = %s", (book_id,))
+    cursor.execute("SELECT id, name, uwb_type_id FROM uwbs WHERE id = %s", (uwb_id,))
 
     # Fetch the row returned by the SELECT query
     row = cursor.fetchone()
@@ -21,21 +21,21 @@ def get_book(book_id):
 
     if row is None:
         # Return a 404 error if the book is not found
-        return jsonify({"error": "Book not found"}), 404
+        return jsonify({"error": "UWB not found"}), 404
 
     # Convert the row to a dictionary and return as JSON
-    book = {"id": row[0], "title": row[1], "author": row[2]}
+    book = {"id": row[0], "name": row[1], "uwb_type_id": row[2]}
     return jsonify(book)
 
 
-@app.route('/books')
-def get_books():
+@app.route('/uwbs')
+def get_uwbs():
 
     # Create a cursor object to execute SQL queries
     cursor = db.cursor()
 
     # Execute a SELECT query to fetch the books data from the database
-    cursor.execute("SELECT id, title, author FROM books")
+    cursor.execute("SELECT id, name, uwb_type_id FROM uwbs")
 
     # Fetch all the rows returned by the SELECT query
     rows = cursor.fetchall()
@@ -45,15 +45,15 @@ def get_books():
     db.close()
 
     # Convert the rows to a list of dictionaries and return as JSON
-    books = []
+    uwbs = []
     for row in rows:
-        books.append({
+        uwbs.append({
             "id": row[0],
-            "title": row[1],
-            "author": row[2]
+            "name": row[1],
+            "uwb_type_id": row[2]
         })
 
-    return jsonify(books)
+    return jsonify(uwbs)
 
 
 if __name__ == '__main__':
